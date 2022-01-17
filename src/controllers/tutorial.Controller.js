@@ -6,20 +6,26 @@ const Tutorials= db.tutorials;
 
 //get all tutorials 
 exports.getAllTutorials = async (req, res) => {
-   await Tutorials.find({}).then((result)=>{
-       res.send(result);
-   }).catch(function(err) {
-        console.log(err);
-        res.status(404).send({err});    
-    });
-   
+    var title=req.query.title || null;
+    if(title){
+        await Tutorials.find({title:title})
+        .then((result)=>{res.send(result);}
+        );
+    }
+    else{
+        await Tutorials.find({}).then((result)=>{
+            res.send(result);
+        }).catch(function(err) {
+                console.log(err);
+                res.status(404).send({err});    
+            });
+    }
 }
 //get a single tutorials
 exports.getTutorial= async(req, res)=>{
     const id=req.params.id;
    await Tutorials.findById(id)
     .then((dbtut) => {
-        console.log(dbtut);
         res.send(dbtut);
     })
     .catch(function(err) {
@@ -38,7 +44,6 @@ exports.createATutorial = async(req, res) => {
    
     await Tutorials.create(Tutorial)
       .then((dbtut) => {
-              console.log(dbtut);
               res.send(dbtut);
           })
     .catch(function(err) {
